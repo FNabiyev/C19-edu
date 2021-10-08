@@ -1,0 +1,21 @@
+{
+  "name": "Alpino",
+  "version": "1.0.0",
+  "description": "Alpino Bootstrap 4 Admin",
+  "main": "Gruntfile.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "WrapTheme",
+  "license": "ISC",
+  "dependencies": {
+    "grunt": "^1.0.2"
+  },
+  "devDependencies": {
+    "grunt-contrib-uglify": "^3.3.0",
+    "grunt-sass": "^2.1.0"
+  }
+}

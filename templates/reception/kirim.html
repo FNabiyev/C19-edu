@@ -1,0 +1,207 @@
+﻿{% extends 'reception/base.html' %}
+{% load static %}
+{% block css %}
+    <title>:: Alpino :: Jwuery Datatable</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <!-- Favicon-->
+    <link rel="stylesheet" href="{% static 'assets/plugins/bootstrap/css/bootstrap.min.css' %}">
+    <!-- JQuery DataTable Css -->
+    <link rel="stylesheet" href="{% static 'assets/plugins/jquery-datatable/dataTables.bootstrap4.min.css' %}">
+    <!-- Bootstrap Select Css -->
+    <link href="{% static 'assets/plugins/bootstrap-select/css/bootstrap-select.css' %}" rel="stylesheet"/>
+    <!-- Custom Css -->
+    <link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/color_skins.css' %}">
+{% endblock css %}
+{% block content %}
+    <section class="content">
+        <div class="container-fluid">
+            <div class="block-header">
+                <div class="row clearfix">
+                    <div class="col-lg-5 col-md-5 col-sm-12">
+                        <h2>Jquery DataTables</h2>
+                        <ul class="breadcrumb padding-0">
+                            <li class="breadcrumb-item"><a href="index.html"><i class="zmdi zmdi-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="javascript:void(0);">Tables</a></li>
+                            <li class="breadcrumb-item active">Jquery DataTables</li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-7 col-md-7 col-sm-12">
+                        <div class="input-group m-b-0">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-addon">
+                            <i class="zmdi zmdi-search"></i>
+                        </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Exportable Table -->
+            <div class="row clearfix">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="header">
+                            <div class="row">
+                                <div class="col-lg-2 col-sm-6">
+                                    <button type="button" data-color="primary" data-toggle="modal"
+                                            data-target="#defaultModal" class="btn bg-primary waves-effect">Qo'shish
+                                    </button>
+                                </div>
+                                <div class="col-lg-2 col-sm-6"></div>
+                                <div class="col-lg-3 col-sm-6">
+                                    <input type="date" onchange="SendDate()" class="form-control" name="date1"
+                                           id="date1">
+                                </div>
+                                <div class="col-lg-3 col-sm-6">
+                                    <input type="date" onchange="SendDate()" class="form-control" name="date2"
+                                           id="date2">
+                                </div>
+                            </div>
+                            <h2><strong>Exportable</strong> Examples </h2>
+                            <ul class="header-dropdown">
+                                <li class="dropdown"><a href="javascript:void(0);" class="dropdown-toggle"
+                                                        data-toggle="dropdown" role="button" aria-haspopup="true"
+                                                        aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
+                                    <ul class="dropdown-menu slideUp">
+                                        <li><a href="javascript:void(0);">Action</a></li>
+                                        <li><a href="javascript:void(0);">Another action</a></li>
+                                        <li><a href="javascript:void(0);">Something else</a></li>
+                                    </ul>
+                                </li>
+                                <li class="remove">
+                                    <a role="button" class="boxs-close"><i class="zmdi zmdi-close"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="body">
+                            <table class="table table-bordered table-striped table-hover dataTable js-exportable">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Summa</th>
+                                    <th>Student</th>
+                                    <th>Izoh</th>
+                                    <th>Sana</th>
+                                </tr>
+                                </thead>
+                                <tfoot>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Summa</th>
+                                    <th>Student</th>
+                                    <th>Izoh</th>
+                                    <th>Sana</th>
+                                </tr>
+                                </tfoot>
+                                <tbody id="kirims">
+                                {% for k in kirimlar %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ k.summa }}</td>
+                                        <td>{{ k.student.last_name }} {{ k.student.first_name }}</td>
+                                        <td>{{ k.izoh }}</td>
+                                        <td>{{ k.date|date:"H:i d.m.Y" }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- #END# Exportable Table -->
+        </div>
+    </section>
+    <!-- Default Size -->
+    <div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <form action="/reception/add-kirim/" method="post">
+                {% csrf_token %}
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="title" id="defaultModalLabel">Kirim qo'shish</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row clearfix">
+                            <div class="col-sm-12 m-b-10">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Summa" name="summa"/>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 m-b-10">
+                                <select class="form-control show-tick" name="student">
+                                    <option value="">O'quvchini tanlang</option>
+                                    {% for d in students %}
+                                        <option value="{{ d.id }}">{{ d.last_name }} {{ d.first_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <textarea rows="2" class="form-control no-resize" placeholder="Izoh..."
+                                              name="izoh"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-primary btn-round waves-effect" value="Qo'shish">
+                        <button type="button" class="btn btn-danger btn-simple btn-round waves-effect"
+                                data-dismiss="modal">CLOSE
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <script>
+        function SendDate() {
+            var date1 = document.getElementById("date1").value;
+            var date2 = document.getElementById("date2").value;
+            console.log(date1, date2)
+            $.ajax({
+                type: "GET",
+                headers: {'Access-Control-Allow-Origin': 'http://127.0.0.1:8000'},
+                url: "/reception/getkirim/",
+                data: {
+                    "date1": date1,
+                    "date2": date2
+                },
+                success: function (data) {
+                    console.log(data);
+                    $("#kirims").empty();
+                    for (let i = 0; i < data['kirim'].length; i++) {
+                        var tr = `<tr>
+                                        <td>`+String(i+1)+`</td>
+                                        <td>`+String(data['kirim'][i]['summa'])+`</td>
+                                        <td>`+String(data['kirim'][i]['last_name'])+String(data['kirim'][i]['first_name'])+`</td>
+                                        <td>`+String(data['kirim'][i]['izoh'])+`</td>
+                                        <td>`+String(data['kirim'][i]['date'])+`</td>
+                                    </tr>`;
+                        $("#kirims").append(tr);
+                    }
+                },
+                error: function (){
+                    $("#kirims").empty();
+                },
+                dataType: "json"
+            });
+        }
+    </script>
+    <!-- Jquery Core Js -->
+    <script src="{% static 'assets/bundles/libscripts.bundle.js' %}"></script> <!-- Lib Scripts Plugin Js -->
+    <script src="{% static 'assets/bundles/vendorscripts.bundle.js' %}"></script> <!-- Lib Scripts Plugin Js -->
+
+    <!-- Jquery DataTable Plugin Js -->
+    <script src="{% static 'assets/bundles/datatablescripts.bundle.js' %}"></script>
+    <script src="{% static 'assets/plugins/jquery-datatable/buttons/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/jquery-datatable/buttons/buttons.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/jquery-datatable/buttons/buttons.colVis.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/jquery-datatable/buttons/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/jquery-datatable/buttons/buttons.print.min.js' %}"></script>
+
+    <script src="{% static 'assets/bundles/mainscripts.bundle.js' %}"></script><!-- Custom Js -->
+    <script src="{% static 'assets/js/pages/tables/jquery-datatable.js' %}"></script>
+{% endblock js %}
