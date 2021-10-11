@@ -1,15 +1,48 @@
-import json
-
+from datetime import datetime
 from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from .models import *
+from django.db.models import Sum, Count
+
+
+def GetChart(request):
+    data = {
+        'kirim':[28, 58, 39, 45, 10, 55, 68, 39, 45, 30, 55, 68],
+        'chiqim':[40, 28, 50, 48, 50, 39, 41, 50, 48, 63, 39, 41]
+    }
+
+    return JsonResponse({'data': data})
 
 
 def Home(request):
+    date = datetime.now()
+    month1 = date.month
+    year1 = date.year
+    if month1 == 12:
+        month2 = 1
+        year2 = year1 + 1
+    else:
+        month2 = month1 + 1
+        year2 = year1
+
+    date1 = datetime(year1, month1, 1)
+    date2 = datetime(year2, month2, 1)
+
+    kirimlar = Kirim.objects.filter(date__gte=date1, date__lt=date2).aggregate(kirim=Sum('summa'))
+    chiqimlar = Chiqim.objects.filter(date__gte=date1, date__lt=date2).aggregate(chiqim=Sum('summa'))
+    student1 = Membership.objects.filter(group__status=1).annotate(oquvchi=Count('student')).count()
+    student2 = Membership.objects.filter(group__status=2).annotate(oquvchi=Count('student')).count()
+    data = {
+        'kirim': kirimlar,
+        'chiqim': chiqimlar,
+        'student1': student1,
+        'student2': student2
+    }
     context = {
         'classhome': 'active open',
         'groups': Groups.objects.all(),
+        'data': data
     }
 
     return render(request, 'reception/home.html', context)
@@ -105,21 +138,23 @@ def ChiqimView(request):
     return render(request, 'reception/chiqim.html', context)
 
 
-def GetKirim(request):
+def GetData(request):
     date1 = request.GET.get('date1')
     date2 = request.GET.get('date2')
-    kr = Kirim.objects.filter(date__gte=date1, date__lte=date2).order_by('-id')
-    kirim = []
-    for i in kr:
+    print(date1, date2)
+
+    kirim = Kirim.objects.filter(date__gte=date1, date__lt=date2)
+    kirims = []
+    for i in kirim:
         t = {
-            'summa':i.summa,
-            'first_name':i.student.first_name,
-            'last_name':i.student.last_name,
-            'izoh':i.izoh,
-            'date':i.date.strftime("%H:%M %d.%m.%Y")
+            'summa': i.summa,
+            'izoh': i.izoh,
+            'first_name': i.student.first_name,
+            'last_name': i.student.last_name,
+            'date': i.date.strftime('%H:%M %d.%m.%Y'),
         }
-        kirim.append(t)
+        kirims.append(t)
     dt = {
-        'kirim':kirim
+        'kirimlar': kirims
     }
     return JsonResponse(dt)

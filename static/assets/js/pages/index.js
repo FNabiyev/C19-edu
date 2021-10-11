@@ -1,9 +1,6 @@
 ﻿//Project:	Alpino - Responsive Bootstrap 4 Template
 //Primary use:	Alpino - Responsive Bootstrap 4 Template
-$(function() {
-    "use strict";	
-	MorrisArea();
-});
+
 
 $(function () {   
     $('.sparkline-pie').sparkline('html', {
@@ -47,55 +44,6 @@ $(function () {
     });
 });
 
-// Morris-chart
-function MorrisArea() {
-    Morris.Area({
-        element: 'm_area_chart',
-        data: [{
-                period: '2011',
-                Visit: 45,
-                Sales: 75                
-            }, {
-                period: '2012',
-                Visit: 130,
-                Sales: 110                
-            }, {
-                period: '2013',
-                Visit: 80,
-                Sales: 60
-            }, {
-                period: '2014',
-                Visit: 78,
-                Sales: 205
-            }, {
-                period: '2015',
-                Visit: 180,
-                Sales: 124
-            }, {
-                period: '2016',
-                Visit: 105,
-                Sales: 100
-            },
-            {
-                period: '2017',
-                Visit: 210,
-                Sales: 180
-            }
-        ],
-        xkey: 'period',
-        ykeys: ['Visit', 'Sales'],
-        labels: ['Visit', 'Sales'],
-        pointSize: 3,
-        fillOpacity: 0,
-        pointStrokeColors: ['#191f28', '#6c7787'],
-        behaveLikeLine: true,
-        gridLineColor: '#e0e0e0',
-        lineWidth: 2,
-        hideHover: 'auto',
-        lineColors: ['#191f28', '#6c7787'],
-        resize: true
-    });
-}
 
 //======
 $(window).on('scroll',function() {

@@ -38,8 +38,8 @@
                 <div class="card text-center">
                     <div class="body">
                         <p class="m-b-20"><i class="zmdi zmdi-balance zmdi-hc-3x col-amber"></i></p>
-                        <span>Total Revenue</span>
-                        <h3 class="m-b-10">$<span class="number count-to" data-from="0" data-to="2078" data-speed="2000" data-fresh-interval="700">2078</span></h3>
+                        <span>Kirim</span>
+                        <h3 class="m-b-10"><span class="number count-to" data-from="0" data-to="{{ data.kirim.kirim }}" data-speed="2000" data-fresh-interval="700">{{ data.kirim.kirim }}</span></h3>
                         <small class="text-muted">27% lower growth</small>
                     </div>
                 </div>
@@ -48,8 +48,8 @@
                 <div class="card text-center">
                     <div class="body">
                         <p class="m-b-20"><i class="zmdi zmdi-assignment zmdi-hc-3x col-blue"></i></p>
-                        <span>Total Orders</span>
-                        <h3 class="m-b-10 number count-to" data-from="0" data-to="865" data-speed="2000" data-fresh-interval="700">865</h3>
+                        <span>Chiqim</span>
+                        <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ data.chiqim.chiqim }}" data-speed="2000" data-fresh-interval="700">{{ data.chiqim.chiqim }}</h3>
                         <small class="text-muted">88% lower growth</small>
                     </div>
                 </div>
@@ -58,8 +58,8 @@
                 <div class="card text-center">
                     <div class="body">
                         <p class="m-b-20"><i class="zmdi zmdi-shopping-basket zmdi-hc-3x"></i></p>
-                        <span>Total Sales</span>
-                        <h3 class="m-b-10 number count-to" data-from="0" data-to="3502" data-speed="2000" data-fresh-interval="700">3502</h3>
+                        <span>Yangi O'quvchilar</span>
+                        <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ data.student1 }}" data-speed="2000" data-fresh-interval="700">{{ data.student1 }}</h3>
                         <small class="text-muted">38% lower growth</small>
                     </div>
                 </div>
@@ -68,8 +68,8 @@
                 <div class="card text-center">
                     <div class="body">
                         <p class="m-b-20"><i class="zmdi zmdi-account-box zmdi-hc-3x col-green"></i></p>
-                        <span>New Employees</span>
-                        <h3 class="m-b-10 number count-to" data-from="0" data-to="78" data-speed="2000" data-fresh-interval="700">78</h3>
+                        <span>O'qimoqda</span>
+                        <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ data.student2 }}" data-speed="2000" data-fresh-interval="700">{{ data.student2 }}</h3>
                         <small class="text-muted">78% lower growth</small>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
             <div class="col-lg-12 col-md-12">
                 <div class="card visitors-map">
                     <div class="header">
-                        <h2><strong>Visit</strong> & Sales Statistics</h2>
+                        <h2><strong>kirim</strong> & chiqim Statistics</h2>
                         <ul class="header-dropdown">
                             <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
                                 <ul class="dropdown-menu slideUp">
@@ -92,7 +92,11 @@
                         </ul>
                     </div>
                     <div class="body m-b-10">
-                        <div id="m_area_chart"></div>
+                        <canvas id="line_chart" height="150"></canvas>
+                    </div>
+                    <div class="body">
+                        <canvas id="bar_chart" height="150"></canvas>
+                    </div>
                     </div>
                     <div class="body">
                         <div class="row">
@@ -265,7 +269,7 @@
                                     </tr>
                                     <tr>                                            
                                         <td>
-                                            <small>Site Visitors</small>
+                                            <small>Site kirimors</small>
                                             <h5 class="m-b-0">2,516</h5>
                                         </td>
                                         <td>
@@ -343,7 +347,7 @@
             <div class="col-lg-12 col-md-12">
                 <div class="card">
                     <div class="header">
-                        <h2><strong>Application</strong> Sales <small>Members Preformance / Monthly Status</small> </h2>
+                        <h2><strong>Application</strong> chiqim <small>Members Preformance / Monthly Status</small> </h2>
                         <ul class="header-dropdown">
                             <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
                                 <ul class="dropdown-menu slideUp">
@@ -363,7 +367,7 @@
                                         <th>Application</th>
                                         <th>Team</th>
                                         <th>Change</th>
-                                        <th>Sales</th>                                    
+                                        <th>chiqim</th>
                                         <th>Price</th>
                                         <th>Total</th>
                                     </tr>
@@ -643,7 +647,163 @@
 </section>
 {% endblock content %}
 {% block js %}
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+
+    <script>
+
+
+
+    $(document).ready(function(){
+
+      console.log('ready')
+        $.ajax({
+                type: "GET",
+                headers: {'Access-Control-Allow-Origin': 'http://127.0.0.1:8000'},
+                url: "/reception/getchart/",
+                success: function (data) {
+                    console.log(data);
+                    var data = data['data'];
+
+                    $(function () {
+                        new Chart(document.getElementById("line_chart").getContext("2d"), getChartJs('line'));
+                        new Chart(document.getElementById("bar_chart").getContext("2d"), getChartJs('bar'));
+                        new Chart(document.getElementById("radar_chart").getContext("2d"), getChartJs('radar'));
+                        new Chart(document.getElementById("pie_chart").getContext("2d"), getChartJs('pie'));
+                    });
+
+                    function getChartJs(type) {
+                        var config = null;
+
+                        if (type === 'line') {
+                            config = {
+                                type: 'line',
+                                data: {
+                                    labels: ["January", "February", "March", "April", "May", "June", "July", "Aug", "sen", "okt", "Nov", "Dec"],
+                                    datasets: [{
+                                        label: "Kirim",
+                                        data: data['kirim'],
+                                        borderColor: 'rgba(241,95,121, 0.2)',
+                                        backgroundColor: 'rgba(241,95,121, 0.5)',
+                                        pointBorderColor: 'rgba(241,95,121, 0.3)',
+                                        pointBackgroundColor: 'rgba(241,95,121, 0.2)',
+                                        pointBorderWidth: 1
+                                    }, {
+                                        label: "Chiqim",
+                                        data:data['chiqim'],
+                                        borderColor: 'rgba(140,147,154, 0.2)',
+                                        backgroundColor: 'rgba(140,147,154, 0.2)',
+                                        pointBorderColor: 'rgba(140,147,154, 0)',
+                                        pointBackgroundColor: 'rgba(140,147,154, 0.9)',
+                                        pointBorderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    legend: false,
+
+                                }
+                            }
+                        }
+                        else if (type === 'bar') {
+                            config = {
+                                type: 'bar',
+                                data: {
+                                    labels: ["January", "February", "March", "April", "May", "June", "July", "au", "sep", "ok", "nov", "dec"],
+                                    datasets: [{
+                                        label: "Kirim",
+                                        data: data['kirim'],
+                                        backgroundColor: '#26c6da',
+                                        strokeColor: "rgba(255,118,118,0.1)",
+                                    }, {
+                                            label: "Chiqim",
+                                            data: data['chiqim'],
+                                            backgroundColor: '#8a8a8b',
+                                            strokeColor: "rgba(255,118,118,0.1)",
+                                        }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    legend: false
+                                }
+                            }
+                        }
+                        else if (type === 'radar') {
+                            config = {
+                                type: 'radar',
+                                data: {
+                                    labels: ["January", "February", "March", "April", "May", "June", "July"],
+                                    datasets: [{
+                                        label: "My First dataset",
+                                        data: [65, 25, 90, 81, 56, 55, 40],
+                                        borderColor: 'rgba(241,95,121, 0.8)',
+                                        backgroundColor: 'rgba(241,95,121, 0.5)',
+                                        pointBorderColor: 'rgba(241,95,121, 0)',
+                                        pointBackgroundColor: 'rgba(241,95,121, 0.8)',
+                                        pointBorderWidth: 1
+                                    }, {
+                                            label: "My Second dataset",
+                                            data: [72, 48, 40, 19, 96, 27, 100],
+                                            borderColor: 'rgba(140,147,154, 0.8)',
+                                            backgroundColor: 'rgba(140,147,154, 0.5)',
+                                            pointBorderColor: 'rgba(140,147,154, 0)',
+                                            pointBackgroundColor: 'rgba(140,147,154, 0.8)',
+                                            pointBorderWidth: 1
+                                        }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    legend: false
+                                }
+                            }
+                        }
+                        else if (type === 'pie') {
+                            config = {
+                                type: 'pie',
+                                data: {
+                                    datasets: [{
+                                        data: [150, 53, 121, 87, 45],
+                                        backgroundColor: [
+                                            "#2a8ceb",
+                                            "#58a3eb",
+                                            "#6fa6db",
+                                            "#86b8e8",
+                                            "#9dc7f0"
+                                        ],
+                                    }],
+                                    labels: [
+                                        "Pia A",
+                                        "Pia B",
+                                        "Pia C",
+                                        "Pia D",
+                                        "Pia E"
+                                    ]
+                                },
+                                options: {
+                                    responsive: true,
+                                    legend: false
+                                }
+                            }
+                        }
+                        return config;
+                    }
+
+                },
+                error: function (){
+                    console.log('errot')
+                },
+                dataType: "json"
+            });
+    });
+
+    function getdata(){
+        var date1 = document.getElementById("date1").value;
+        var date2 = document.getElementById("date2").value;
+        console.log(date1, date2);
+
+        }
+    </script>
 <!-- Jquery Core Js -->
+    <script src="{% static 'assets/js/pages/charts/chartjs.js'%}"></script>
 <script src="{% static 'assets/bundles/libscripts.bundle.js'%}"></script> <!-- Lib Scripts Plugin Js ( jquery.v3.2.1, Bootstrap4 js) -->
 <script src="{% static 'assets/bundles/vendorscripts.bundle.js'%}"></script> <!-- slimscroll, waves Scripts Plugin Js -->
 

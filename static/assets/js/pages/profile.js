@@ -6,7 +6,7 @@ function MorrisArea() {
     Morris.Area({
         element: 'm_area_chart',
         data: [{
-                period: '2011',
+                period: '2010',
                 Earnings: 45,
                 Sales: 75,
                 
@@ -38,8 +38,8 @@ function MorrisArea() {
             },
             {
                 period: '2017',
-                Earnings: 210,
-                Sales: 180,
+                Earnings: 300,
+                Sales: 100,
             
             }
         ],

@@ -10,5 +10,6 @@ urlpatterns = [
     path('kirim/', KirimView),
     path('add-kirim/', AddKirimView),
     path('chiqim/', ChiqimView),
-    path('getkirim/', GetKirim),
+    path('getdata/', GetData),
+    path('getchart/', GetChart),
 ]
