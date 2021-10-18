@@ -9,8 +9,9 @@ class Users(AbstractUser):
     is_manager = models.BooleanField(default=False)
     is_teacher = models.BooleanField(default=False)
     is_reception = models.BooleanField(default=False)
-    is_student = models.BooleanField(default=True)
+    is_student = models.BooleanField(default=False)
     address = models.CharField(max_length=255, null=True, blank=True)
+    photo = models.ImageField(upload_to='users', null=True, blank=True)
 
     def __str__(self):
         if self.is_student:
@@ -23,6 +24,7 @@ class Users(AbstractUser):
 
     class Meta(AbstractUser.Meta):
         swappable = 'AUTH_USER_MODEL'
+
 
 class Direction(models.Model):
     name = models.CharField(max_length=255)

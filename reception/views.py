@@ -7,9 +7,34 @@ from django.db.models import Sum, Count
 
 
 def GetChart(request):
+    kirim = []
+    chiqim = []
+    for i in range(1, 13):
+        date = datetime.today()
+        year = date.year
+        if i == 12:
+            month2 = 1
+            year2 = year + 1
+        else:
+            month2 = i + 1
+            year2 = year
+        gte = str(year) + '-' + str(i) + '-01 00:00:00'
+        # gte = datetime(year, i, 1)
+        # lt = datetime(year2, month2, 1)
+        lt = str(year2) + '-' + str(month2) + '-01 00:00:00'
+        kr = Kirim.objects.filter(date__gte=gte, date__lt=lt).aggregate(kirim=Sum('summa'))
+        chq = Chiqim.objects.filter(date__gte=gte, date__lt=lt).aggregate(chiqim=Sum('summa'))
+        if kr['kirim'] is None:
+            kirim.append(0)
+        else:
+            kirim.append(kr['kirim'])
+        if chq['chiqim'] is None:
+            chiqim.append(0)
+        else:
+            chiqim.append(chq['chiqim'])
     data = {
-        'kirim':[28, 58, 39, 45, 10, 55, 68, 39, 45, 30, 55, 68],
-        'chiqim':[40, 28, 50, 48, 50, 39, 41, 50, 48, 63, 39, 41]
+        'kirim':kirim,
+        'chiqim':chiqim
     }
 
     return JsonResponse({'data': data})
