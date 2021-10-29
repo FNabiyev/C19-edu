@@ -10,7 +10,7 @@ admin.site.unregister(Group)
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name', 'birthday', 'phone', 'address')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'birthday', 'phone', 'address', 'photo')}),
         (_('Permissions'), {
             'fields': (
             'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions', 'is_director', 'is_manager', 'is_teacher', 'is_reception', 'is_student'),
@@ -30,3 +30,7 @@ admin.site.register(Groups)
 admin.site.register(Membership)
 admin.site.register(Kirim)
 admin.site.register(Chiqim)
+admin.site.register(Resources)
+admin.site.register(Plan)
+admin.site.register(Lessons)
+admin.site.register(Homeworks)

@@ -70,3 +70,37 @@ class Chiqim(models.Model):
 
     def __str__(self):
         return str(self.summa)
+
+
+class Resources(models.Model):
+    group = models.ForeignKey(Groups, on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=250)
+    file = models.FileField(upload_to='file', null=True, blank=True)
+    photo = models.ImageField(upload_to='resource', null=True, blank=True)
+    youtube = models.CharField(max_length=255)
+
+
+    def __str__(self):
+        return self.name
+
+class Plan(models.Model):
+    teacher = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='teachplan')
+    direction = models.ForeignKey(Direction, on_delete=models.CASCADE, related_name='directplan')
+
+    def __str__(self):
+        return self.direction.name + " " + self.teacher.first_name
+
+class Lessons(models.Model):
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE, related_name='planlesson')
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+class Homeworks(models.Model):
+    lesson = models.ForeignKey(Lessons, on_delete=models.CASCADE, related_name='homeles')
+    student = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='homestu')
+    file = models.FileField(upload_to='homework')
+
+    def __str__(self):
+        return self.lesson.name

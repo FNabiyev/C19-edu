@@ -8,18 +8,22 @@ def Login(request):
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
-        print(password)
         user = authenticate(request, username=username, password=password)
         if user is not None:
+
             if user.is_reception:
                 login(request, user)
                 return redirect('/reception/')
             elif user.is_student:
+
                 login(request, user)
                 return redirect('/student/')
             elif user.is_director:
                 login(request, user)
                 return redirect('/director/')
+            elif user.is_teacher:
+                login(request, user)
+                return redirect('/teacher/')
             else:
                 return render(request, 'login.html')
         else:
@@ -67,3 +71,26 @@ def Register(request):
         # print(username, password, age)
 
         return render(request, 'register.html')
+
+def ForgetPassword(request):
+    if request.method == "POST":
+        r = request.POST
+        username = r['username']
+        password1 = r['password1']
+        password2 = r['password2']
+        try:
+            user = Users.objects.get(username=username)
+            if password1 == password2:
+                user.password = make_password(password1)
+                user.save()
+                print('if')
+                return redirect('/login/')
+            else:
+                print('else')
+                messages.error(request, 'Password1 va Password2 bir xil emas')
+                return redirect('/forget-password/')
+        except:
+            messages.error(request,  '<strong>{}</strong> bunday foydalanuvchi yo`q'.format(username))
+            return redirect('/forget-password/')
+
+    return render(request, 'forgot-password.html')

@@ -17,12 +17,16 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from .views import Login, Logout, Register
+from .views import Login, Logout, Register, ForgetPassword
 
 urlpatterns = [
     path('reception/', include('reception.urls')),
+    path('teacher/', include('teacher.urls')),
+    path('director/', include('director.urls')),
+    path('student/', include('student.urls')),
     path('admin/', admin.site.urls),
     path('login/', Login),
     path('logout/', Logout),
     path('register/', Register),
+    path('forget-password/', ForgetPassword),
 ]+static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
